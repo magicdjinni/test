@@ -1,0 +1,27 @@
+shared:
+  resource:
+    path: ../src/Shared/Presentation/
+    namespace: App\Shared\Presentation
+  type: attribute
+
+movies:
+  resource:
+    path: ../src/Movies/Presentation/
+    namespace: App\Movies\Presentation
+  type: attribute
+
+sessions:
+  resource:
+    path: ../src/Sessions/Presentation/
+    namespace: App\Sessions\Presentation
+  type: attribute
+
+visitors:
+    resource:
+        path: ../src/Visitors/Presentation/
+        namespace: App\Visitors\Presentation
+    type: attribute
+
+
+
+

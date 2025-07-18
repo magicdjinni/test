@@ -1,0 +1,64 @@
+services:
+  protonix-nginx:
+    image: "nginx:stable-alpine"
+    container_name: "protonix-nginx"
+    ports:
+      - "80:80"
+    volumes:
+      - ./config.local/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./logs.local/nginx:/var/logs/nginx
+      - ./src:/var/www/protonix
+    networks:
+      - protonix-inner-network
+    depends_on:
+      - protonix-php-fpm
+      - protonix-mariadb
+
+  protonix-php-fpm:
+    build:
+      context: dockerfiles
+      dockerfile: php-fpm.Dockerfile
+    container_name: "protonix-php-fpm"
+    networks:
+      - protonix-inner-network
+    volumes:
+      - ./config.local/php-fpm/php.ini:/usr/local/etc/php/conf.d/php.ini:ro
+      - ./config.local/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./config.local/php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      - ./logs.local/php-fpm:/var/log/php-fpm
+      - ./src:/var/www/protonix
+
+  protonix-services:
+    build:
+      context: dockerfiles
+      dockerfile: composer.Dockerfile
+    container_name: "protonix-services"
+    networks:
+      - protonix-inner-network
+    volumes:
+      - ./src:/var/www/protonix
+
+  protonix-mariadb:
+    image: "mariadb:latest"
+    container_name: "protonix-mariadb"
+    env_file:
+      - /config.local/mariadb/.env
+    ports:
+      - "3316:3306"
+    networks:
+      - protonix-inner-network
+    volumes:
+      - ./db-data/mariadb.local:/var/lib/mysql
+
+#  protonix-redis:
+#    image: "redis:latest"
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - ./db-data/redis.local:/data
+
+volumes:
+  db-data:
+
+networks:
+  protonix-inner-network:

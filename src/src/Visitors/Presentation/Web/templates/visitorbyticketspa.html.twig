@@ -1,0 +1,101 @@
+{% extends 'index.html.twig' %}
+{% block title %}Buy Ticket{% endblock %}
+
+{% block body %}
+    <div id="app" class="p-6 max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">🎫 Buy Movie Tickets</h1>
+
+        <div v-if="!visitorUlid" class="text-red-600 mb-6">
+            Please <a href="/visitor" class="underline text-blue-600">log in</a> as a visitor to buy tickets.
+        </div>
+
+        <div v-else>
+            <div v-if="sessions.length === 0" class="text-gray-500">No movie sessions found.</div>
+
+            <ul>
+                <li v-for="session in sessions" :key="session.ulid" class="bg-white p-4 shadow mb-4 rounded flex justify-between items-center">
+                    <div>
+                        <p><strong>🎬 {{ '{{' }} getMovieTitle(session.movieUlid)  {{ '}}' }}</strong></p>
+                        <p><span class="text-gray-600">Start:</span> {{ '{{' }} formatDate(session.startDate) {{ '}}' }}</p>
+                        <p><span class="text-gray-600">Price:</span> {{ '{{' }} session.price.toFixed(2) {{ '}}' }} ₴</p>
+                    </div>
+                    <button @click="buyTicket(session)" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                        Buy
+                    </button>
+                </li>
+            </ul>
+
+            <div v-if="message" class="mt-6 text-green-700 font-semibold">
+                {{ '{{' }} message {{ '}}' }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const sessions = ref([]);
+                const movies = ref([]);
+                const visitorUlid = ref(localStorage.getItem('visitorUlid') || null);
+                const message = ref('');
+
+                const loadSessions = async () => {
+                    const res = await fetch('/api/moviesession/getlist');
+                    sessions.value = await res.json();
+                };
+
+                const loadMovies = async () => {
+                    const res = await fetch('/api/movie/getlist');
+                    movies.value = await res.json();
+                };
+
+                const getMovieTitle = (ulid) => {
+                    const movie = movies.value.find(m => m.ulid === ulid);
+                    return movie ? movie.title : 'Unknown';
+                };
+
+                const formatDate = (date) => new Date(date).toLocaleString();
+
+                const buyTicket = async (session) => {
+                    message.value = '';
+                    if (!visitorUlid.value) {
+                        message.value = 'You must be logged in to buy a ticket.';
+                        return;
+                    }
+
+                    const payload = {
+                        visitorUlid: visitorUlid.value,
+                        movieSessionUlid: session.ulid,
+                        status: 'purchaised',
+                        price: session.price
+                    };
+
+                    const res = await fetch('/api/ticket/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.ok) {
+                        message.value = '🎉 Ticket purchased successfully!';
+                    } else {
+                        const err = await res.json();
+                        message.value = err.error || 'Error purchasing ticket.';
+                    }
+                };
+
+                onMounted(() => {
+                    loadSessions();
+                    loadMovies();
+                });
+
+                return {
+                    sessions, movies, visitorUlid, message,
+                    getMovieTitle, formatDate, buyTicket
+                };
+            }
+        }).mount('#app');
+    </script>
+{% endblock %}

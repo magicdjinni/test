@@ -1,0 +1,718 @@
+{
+	"info": {
+		"_postman_id": "74e30222-88f3-4893-b1c7-e7bcef4938a0",
+		"name": "protonix.test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "703291"
+	},
+	"item": [
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "api_create_movie",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Rock\",\r\n  \"releaseDate\": \"1999-09-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/movie/create?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"movie",
+								"create"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_update_movie",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ulid\": \"01K0ABHC5EPRJK13HQRRF76KG3\",\r\n    \"title\": \"Rockky\",\r\n    \"releaseDate\": \"1999-10-10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/movie/update?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"movie",
+								"update"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_delete_movie",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ulid\" : \"01K0ABGCQJZ2XQ3EKP48JX663S\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/movie/delete?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"movie",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_movie",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/movie/get/01K0ABGWJAY3EK2S8J276TADVD?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"movie",
+								"get",
+								"01K0ABGWJAY3EK2S8J276TADVD"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_all_movies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/movie/getlist?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"movie",
+								"getlist"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sessions",
+			"item": [
+				{
+					"name": "api_create_moviesession",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"movieUlid\": \"01K0AB23PWRD3HCF27NSS9M6KR\",\r\n  \"startDate\": \"2025-07-21\",\r\n  \"price\" : \"180.30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/moviesession/create?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"moviesession",
+								"create"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_update_moviesession",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ulid\": \"01K0C5H9RYVYDMYCFF6E1CN62T\",\r\n  \"movieUlid\": \"01K0AB23PWRD3HCF27NSS9M6KR\",\r\n  \"startDate\": \"2025-02-25\",\r\n  \"price\" : \"140\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/moviesession/update?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"moviesession",
+								"update"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_delete_moviesession",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ulid\" : \"01K0C5HZRDHP7X7KARJ77SQ2YD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/moviesession/delete?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"moviesession",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_moviesession",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/moviesession/get/01K0C5K58865NBNK7DYH989P03?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"moviesession",
+								"get",
+								"01K0C5K58865NBNK7DYH989P03"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_all_moviesessions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/moviesession/getlist?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"moviesession",
+								"getlist"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Visitors",
+			"item": [
+				{
+					"name": "api_create_visitor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\": \"friend\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/create?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"create"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_visitor_login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/login?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"login"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_update_visitor",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ulid\": \"01K0DMQR19CH9K42Z7B83T3J4F\",\r\n  \"email\": \"test1@gmail.com\",\r\n  \"password\" : \"friend123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/update?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"update"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_cancel_visitor_ticket",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ulid\": \"01K0E78Y9AGRTN9VJ220JMJBBA\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/ticket/cancel?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"ticket",
+								"cancel"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_delete_visitor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ulid\" : \"01K0DMRYFYE0S741M5X6KDPS8J\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/delete?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_visitor",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/get/01K0DMSJBY4MK2V0ZN2TVX0BRX?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"get",
+								"01K0DMSJBY4MK2V0ZN2TVX0BRX"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_all_visitor_ticket",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/ticket/01K0DMQR19CH9K42Z7B83T3J4F?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"ticket",
+								"01K0DMQR19CH9K42Z7B83T3J4F"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_all_visitors",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/visitor/getlist?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"visitor",
+								"getlist"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://protonix.test/healthcheck",
+					"protocol": "http",
+					"host": [
+						"protonix",
+						"test"
+					],
+					"path": [
+						"healthcheck"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

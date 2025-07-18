@@ -1,0 +1,23 @@
+moviespa:
+  path: /moviespa
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: '@Movies/moviespa.html.twig'
+
+moviesessionspa:
+  path: /moviesessionspa
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: '@Sessions/moviesessionspa.html.twig'
+
+visitorspa:
+  path: /visitorspa
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: '@Visitors/visitorspa.html.twig'
+
+visitorloginspa:
+  path: /visitorloginspa
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: '@Visitors/visitorloginspa.html.twig'

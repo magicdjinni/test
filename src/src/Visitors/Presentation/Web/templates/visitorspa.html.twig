@@ -1,0 +1,134 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}Visitors Management{% endblock %}
+
+{% block body %}
+    <div id="app" class="p-6 max-w-4xl mx-auto">
+        <div class="text-center">
+            <br>
+            <h1 class="text-2xl font-bold mb-5">👤 Visitors</h1>
+        </div>
+
+        <div class="bg-white shadow rounded p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4">{{ '{{' }} isEditing ? 'Edit Visitor' : 'Create Visitor' {{ '}}' }}</h2>
+
+            <form @submit.prevent="handleSubmit" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Email</label>
+                    <input v-model="form.email" type="email" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input v-model="form.password" type="password" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        {{ '{{' }} isEditing ? 'Update' : 'Create' {{ '}}' }}
+                    </button>
+                    <button type="button" @click="resetForm" class="text-gray-600 hover:underline">Reset</button>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="bg-white shadow rounded p-6">
+            <h2 class="text-lg font-semibold mb-4">Visitor List</h2>
+            <div v-if="visitors.length === 0" class="text-gray-500">No visitors found.</div>
+
+            <ul>
+                <li v-for="visitor in visitors" :key="visitor.ulid" class="border-b py-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p><strong>Email:</strong> {{ '{{' }} visitor.email {{ '}}' }}</p>
+                            <p><strong>ID:</strong> {{ '{{' }} visitor.ulid {{ '}}' }}</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button @click="editVisitor(visitor)" class="text-blue-600 hover:underline">Edit</button>
+                            <button @click="deleteVisitor(visitor.ulid)" class="text-red-600 hover:underline">Delete</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const visitors = ref([]);
+                const isEditing = ref(false);
+                const form = ref({
+                    ulid: null,
+                    email: '',
+                    password: '',
+                });
+
+                const loadVisitors = async () => {
+                    const res = await fetch('/api/visitor/getlist');
+                    visitors.value = await res.json();
+                };
+
+                const handleSubmit = async () => {
+                    let url = '';
+                    let method = '';
+
+                    if (isEditing.value) {
+                        url = '/api/visitor/update';
+                        method = 'PUT';
+                    } else {
+                        url = '/api/visitor/create';
+                        method = 'POST';
+                    }
+
+                    const payload = { ...form.value };
+
+                    await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+
+                    await loadVisitors();
+                    resetForm();
+                };
+
+                const deleteVisitor = async (ulid) => {
+                    if (!confirm('Are you sure?')) return;
+                    await fetch('/api/visitor/delete', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ulid }),
+                    });
+                    await loadVisitors();
+                };
+
+                const editVisitor = (visitor) => {
+                    form.value = {
+                        ulid: visitor.ulid,
+                        email: visitor.email,
+                        password: '',
+                    };
+                    isEditing.value = true;
+                };
+
+                const resetForm = () => {
+                    form.value = { ulid: null, email: '', password: '' };
+                    isEditing.value = false;
+                };
+
+                onMounted(() => {
+                    loadVisitors();
+                });
+
+                return {
+                    visitors, form, isEditing,
+                    handleSubmit, deleteVisitor, editVisitor, resetForm,
+                };
+            }
+        }).mount('#app');
+    </script>
+{% endblock %}

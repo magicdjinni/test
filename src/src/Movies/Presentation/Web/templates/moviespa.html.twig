@@ -1,0 +1,124 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}Movies{% endblock %}
+
+{% block body %}
+
+    <div id="app" class="max-w-xl mx-auto">
+        <div class="text-center">
+            <br>
+            <h1 class="text-2xl font-bold mb-5">🎬 Movies CRUD functional</h1>
+        </div>
+        <!-- Форма добавления / редактирования -->
+        <form @submit.prevent="isEditing ? updateMovie() : addMovie()"
+              class="mb-6 space-y-4 bg-white p-4 rounded shadow">
+            <div>
+                <label class="block text-sm font-medium">Title</label>
+                <input v-model="form.title" type="text" class="w-full border p-2 rounded" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Release Date</label>
+                <input v-model="form.releaseDate" type="date" class="w-full border p-2 rounded" required>
+            </div>
+            <div class="flex justify-between">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    {{ '{{' }} isEditing ? 'Update' : 'Add' {{ '}}' }}
+                </button>
+                <button type="button" v-if="isEditing" @click="cancelEdit"
+                        class="text-sm text-gray-500 hover:underline">Cancel
+                </button>
+            </div>
+        </form>
+
+        <!-- Список фильмов -->
+        <ul class="space-y-4">
+            <li v-for="movie in movies" :key="movie.ulid"
+                class="bg-white p-4 rounded shadow flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-semibold">{{ '{{' }} movie.title {{ '}}' }}</h2>
+                    <p class="text-sm text-gray-500">{{ '{{' }} movie.releaseDate {{ '}}' }}</p>
+                </div>
+                <div class="space-x-2">
+                    <button @click="startEdit(movie)" class="text-blue-500 hover:underline text-sm">Edit</button>
+                    <button @click="deleteMovie(movie.ulid)" class="text-red-500 hover:underline text-sm">Delete
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        const {createApp} = Vue;
+
+        createApp({
+            data() {
+                return {
+                    movies: [],
+                    form: {
+                        ulid: '',
+                        title: '',
+                        releaseDate: ''
+                    },
+                    isEditing: false
+                };
+            },
+            mounted() {
+                this.fetchMovies();
+            },
+            methods: {
+                async fetchMovies() {
+                    const res = await fetch('/api/movie/getlist');
+                    this.movies = await res.json();
+                },
+                async addMovie() {
+                    await fetch('/api/movie/create', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            title: this.form.title,
+                            releaseDate: this.form.releaseDate
+                        })
+                    });
+                    this.resetForm();
+                    this.fetchMovies();
+                },
+                async deleteMovie(id) {
+                    if (!confirm('Are you sure?')) return;
+
+                    await fetch('/api/movie/delete', {
+                        method: 'DELETE',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            ulid: id
+                        })
+                    });
+                    this.fetchMovies();
+                },
+                startEdit(movie) {
+                    this.form = {...movie};
+                    this.isEditing = true;
+                },
+                cancelEdit() {
+                    this.resetForm();
+                },
+                async updateMovie() {
+                    await fetch(`/api/movie/update`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            ulid: this.form.ulid,
+                            title: this.form.title,
+                            releaseDate: this.form.releaseDate
+                        })
+                    });
+                    this.resetForm();
+                    this.fetchMovies();
+                },
+                resetForm() {
+                    this.form = {ulid: '', title: '', releaseDate: ''};
+                    this.isEditing = false;
+                }
+            }
+        }).mount('#app');
+    </script>
+{% endblock %}

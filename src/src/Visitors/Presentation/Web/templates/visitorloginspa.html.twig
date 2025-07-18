@@ -1,0 +1,244 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}Visitor Login{% endblock %}
+
+{% block body %}
+    <div class="p-6 max-w-4xl mx-auto">
+        <div class="text-center">
+            <br>
+            <h1 class="text-2xl font-bold mb-5">👤 Visitor cabinet</h1>
+        </div>
+    </div>
+
+    <div id="app" class="flex items-center justify-center bg-gray-100 p-4 w-full">
+        <div v-if="!isLoggedIn" class="bg-white shadow p-6 rounded w-full max-w-sm">
+            <h2 class="text-xl font-bold mb-4">Login as Visitor</h2>
+
+            <form @submit.prevent="login">
+                <div class="mb-4">
+                    <label>Email</label>
+                    <input v-model="email" type="email" class="w-full border p-2 rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label>Password</label>
+                    <input v-model="password" type="password" class="w-full border p-2 rounded" required>
+                </div>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Login</button>
+                <p v-if="error" class="text-red-600 mt-3">{{ '{{' }} error {{ '}}' }}</p>
+            </form>
+        </div>
+
+        <div v-else class="bg-white shadow p-6 rounded w-full max-w-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Hello, {{ '{{' }} visitor.email {{ '}}' }}</h2>
+                <button @click="logout" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Logout</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-4 mb-6">
+                <button @click="activeTab = 'buy'" :class="activeTab === 'buy' ? 'border-b-2 border-blue-600 text-blue-600 font-semibold' : 'text-gray-600'" class="pb-1">🎫 Buy Ticket</button>
+                <button @click="activeTab = 'cancel'" :class="activeTab === 'cancel' ? 'border-b-2 border-blue-600 text-blue-600 font-semibold' : 'text-gray-600'" class="pb-1">❌ Cancel Ticket</button>
+            </div>
+
+            <!-- Buy Tickets Tab -->
+            <div v-if="activeTab === 'buy'">
+                <div v-if="message" class="text-green-700 font-semibold mb-4">{{ '{{' }} message {{ '}}' }}</div>
+                <div v-if="sessions.length === 0" class="text-gray-500">No movie sessions found.</div>
+
+                <ul>
+                    <li v-for="session in sessions" :key="session.ulid" class="bg-gray-50 p-4 shadow mb-4 rounded flex justify-between items-center">
+                        <div>
+                            <p><strong>🎬 {{ '{{' }} getMovieTitle(session.movieUlid) {{ '}}' }}</strong></p>
+                            <p>📅 {{ '{{' }} formatDate(session.startDate) {{ '}}' }}</p>
+                            <p>💰 {{ '{{' }} session.price.toFixed(2) {{ '}}' }} ₴</p>
+                        </div>
+                        <button @click="buyTicket(session)" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Buy</button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Cancel Tickets Tab -->
+            <div v-if="activeTab === 'cancel'">
+                <div v-if="cancelMessage" class="text-green-700 font-semibold mb-4">{{ '{{' }} cancelMessage {{ '}}' }}</div>
+                <div v-if="tickets.length === 0" class="text-gray-500">No tickets to cancel.</div>
+
+                <ul>
+                    <li v-for="ticket in tickets" :key="ticket.ulid"
+                        :class="[
+                             'p-4 shadow mb-4 rounded flex justify-between items-center',
+                            ticket.status === 'cancelled' ? 'bg-gray-200 text-gray-500' : 'bg-gray-50'
+                        ]">
+                        <div>
+                            <p v-if="getSessionByUlid(ticket.movieSessionUlid)">
+                                <strong>🎬 {{ '{{' }} getMovieTitle(getSessionByUlid(ticket.movieSessionUlid).movieUlid) {{ '}}' }}</strong><br>
+                                📅 {{ '{{' }} formatDate(getSessionByUlid(ticket.movieSessionUlid).startDate) {{ '}}' }}
+                            </p>
+                            <p v-else class="text-red-500">⚠️ Session info not found</p>
+                            <p>💰 {{ '{{' }} ticket.soldPrice.toFixed(2) {{ '}}' }} ₴</p>
+                            <p>Status: <span :class="ticket.status === 'cancelled' ? 'text-red-500 font-semibold' : 'text-green-600 font-semibold'">
+                                {{ '{{' }} ticket.status {{ '}}' }}
+                            </span></p>
+                        </div>
+
+                        <button v-if="ticket.status !== 'cancelled'"
+                                @click="cancelTicket(ticket.ulid)"
+                                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Cancel
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted, computed } = Vue;
+
+        createApp({
+            setup() {
+                const email = ref('');
+                const password = ref('');
+                const error = ref(null);
+                const visitor = ref(null);
+                const isLoggedIn = computed(() => !!visitor.value);
+
+                const sessions = ref([]);
+                const movies = ref([]);
+                const message = ref('');
+                const tickets = ref([]);
+                const cancelMessage = ref('');
+                const activeTab = ref('buy');
+
+                const login = async () => {
+                    error.value = null;
+
+                    const res = await fetch('/api/visitor/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email.value, password: password.value }),
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        localStorage.setItem('visitorToken', data.token);
+                        localStorage.setItem('visitorUlid', data.ulid);
+                        localStorage.setItem('visitorEmail', data.email);
+                        visitor.value = { ulid: data.ulid, email: data.email };
+                        await loadTickets(); // preload tickets
+                    } else {
+                        const err = await res.json();
+                        error.value = err.error || 'Login failed';
+                    }
+                };
+
+                const logout = () => {
+                    localStorage.clear();
+                    visitor.value = null;
+                    sessions.value = [];
+                    movies.value = [];
+                    tickets.value = [];
+                    message.value = '';
+                    cancelMessage.value = '';
+                };
+
+                const loadSessions = async () => {
+                    const res = await fetch('/api/moviesession/getlist');
+                    sessions.value = await res.json();
+                };
+
+                const loadMovies = async () => {
+                    const res = await fetch('/api/movie/getlist');
+                    movies.value = await res.json();
+                };
+
+                const getMovieTitle = (ulid) => {
+                    const movie = movies.value.find(m => m.ulid === ulid);
+                    return movie ? movie.title : 'Unknown';
+                };
+
+                const formatDate = (date) => new Date(date).toLocaleString();
+
+                const buyTicket = async (session) => {
+                    message.value = '';
+                    const payload = {
+                        visitorUlid: visitor.value.ulid,
+                        movieSessionUlid: session.ulid,
+                        price: session.price
+                    };
+
+                    const res = await fetch('/api/visitor/ticket/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.ok) {
+                        message.value = 'Ticket purchased successfully!';
+                        await loadTickets();
+                    } else {
+                        const err = await res.json();
+                        message.value = err.error || 'Error purchasing ticket.';
+                    }
+                };
+
+                const loadTickets = async () => {
+                    if (!visitor.value?.ulid) return;
+                    const res = await fetch(`/api/visitor/ticket/${visitor.value.ulid}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        tickets.value = data;
+                    } else {
+                        tickets.value = [];
+                    }
+                };
+
+                const cancelTicket = async (ticketUlid) => {
+                    cancelMessage.value = '';
+
+                    const res = await fetch('/api/visitor/ticket/cancel', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ulid: ticketUlid })
+                    });
+
+                    if (res.ok) {
+                        cancelMessage.value = 'Ticket cancelled successfully.';
+                        await loadTickets();
+                    } else {
+                        const err = await res.json();
+                        cancelMessage.value = err.error || 'Unable to cancel ticket.';
+                    }
+                };
+
+                const getSessionByUlid = (ulid) => {
+                    return sessions.value.find(s => s.ulid === ulid);
+                };
+
+                onMounted(async () => {
+                    // Restore login
+                    const token = localStorage.getItem('visitorToken');
+                    const ulid = localStorage.getItem('visitorUlid');
+                    const emailStored = localStorage.getItem('visitorEmail');
+
+                    if (token && ulid && emailStored) {
+                        visitor.value = { ulid, email: emailStored };
+                    }
+
+                    await loadMovies();     // Загружаем фильмы сначала
+                    await loadSessions();   // Потом сессии
+                    await loadTickets();    // Потом билеты
+                });
+
+                return {
+                    // auth
+                    email, password, error, visitor, isLoggedIn, login, logout,
+                    // app
+                    activeTab, message, cancelMessage,
+                    sessions, movies, tickets,
+                    getMovieTitle, formatDate,
+                    buyTicket, cancelTicket, getSessionByUlid
+                };
+            }
+        }).mount('#app');
+    </script>
+{% endblock %}

@@ -1,0 +1,4 @@
+api_movies:
+  resource: '../../src/Movies/Presentation/Rest/Controller/'
+  type: attribute
+  prefix: /api

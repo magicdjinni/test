@@ -1,0 +1,16 @@
+nelmio_api_doc:
+  areas:
+    default:
+      path_patterns: [ '^/api' ]
+
+  documentation:
+    servers:
+      - url: http://protonix.test
+        description: API over HTTP
+    info:
+      title: Protonix test
+      description: |
+        Technical task for protonix
+        <a href="http://protonix.test" style="font-weight: bold;">🏠 Back to home</a>
+      version: 1.0.0
+

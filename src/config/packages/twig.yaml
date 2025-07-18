@@ -1,0 +1,11 @@
+twig:
+  file_name_pattern: '*.twig'
+  default_path: '%kernel.project_dir%/src/Shared/Presentation/templates'
+  paths:
+    '%kernel.project_dir%/src/Shared/Presentation/templates': ~
+    '%kernel.project_dir%/src/Movies/Presentation/Web/templates': Movies
+    '%kernel.project_dir%/src/Sessions/Presentation/Web/templates': Sessions
+    '%kernel.project_dir%/src/Visitors/Presentation/Web/templates': Visitors
+when@test:
+  twig:
+    strict_variables: true

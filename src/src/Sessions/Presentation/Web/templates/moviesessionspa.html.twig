@@ -1,0 +1,174 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}Movie Sessions{% endblock %}
+
+{% block body %}
+    <div id="app" class="p-6 max-w-4xl mx-auto">
+        <div class="text-center">
+            <br>
+            <h1 class="text-2xl font-bold mb-5">🎬 Movie Sessions CRUD functional</h1>
+        </div>
+
+        <!-- Форма создания/редактирования -->
+        <div class="bg-white shadow rounded p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4">
+                {{ '{{' }} isEditing ? 'Edit Session' : 'Create Session' {{ '}}' }}
+            </h2>
+
+            <form @submit.prevent="handleSubmit" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Select Movie</label>
+                    <select v-model="form.movieUlid" class="w-full border border-gray-300 rounded p-2" required>
+                        <option disabled value="">-- Choose a movie --</option>
+                        <option v-for="movie in movies" :key="movie.ulid" :value="movie.ulid">
+                            {{ '{{' }} movie.title {{ '}}' }}
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Start Date</label>
+                    <input v-model="form.startDate" type="datetime-local"
+                           class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Price</label>
+                    <input v-model.number="form.price" type="number" step="0.01"
+                           class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        {{ '{{' }} isEditing ? 'Update' : 'Create' {{ '}}' }}
+                    </button>
+                    <button type="button" @click="resetForm" class="text-gray-600 hover:underline">Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Список сеансов -->
+        <div class="bg-white shadow rounded p-6">
+            <h2 class="text-lg font-semibold mb-4">Existing Sessions</h2>
+            <div v-if="sessions.length === 0" class="text-gray-500">No sessions available.</div>
+
+            <ul>
+                <li v-for="session in sessions" :key="session.ulid" class="border-b py-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p><strong>Movie:</strong> {{ '{{' }} getMovieTitle(session.movieUlid) {{ '}}' }}</p>
+                            <p><strong>Start:</strong> {{ '{{' }} formatDate(session.startDate) {{ '}}' }}</p>
+                            <p><strong>Price:</strong> {{ '{{' }} session.price.toFixed(2) {{ '}}' }} ₴</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button @click="editSession(session)" class="text-blue-600 hover:underline">Edit</button>
+                            <button @click="deleteSession(session.ulid)" class="text-red-600 hover:underline">Delete
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const {createApp, ref, onMounted} = Vue;
+
+        createApp({
+            setup() {
+                const sessions = ref([]);
+                const movies = ref([]);
+                const isEditing = ref(false);
+                const form = ref({
+                    ulid: null,
+                    movieUlid: '',
+                    startDate: '',
+                    price: null,
+                });
+
+                const loadSessions = async () => {
+                    const res = await fetch('/api/moviesession/getlist');
+                    sessions.value = await res.json();
+                };
+
+                const loadMovies = async () => {
+                    const res = await fetch('/api/movie/getlist');
+                    movies.value = await res.json();
+                };
+
+                const handleSubmit = async () => {
+                    let url = '';
+                    let method = '';
+
+                    if (isEditing.value) {
+                        url = '/api/moviesession/update';
+                        method = 'PUT';
+                    } else {
+                        url = '/api/moviesession/create';
+                        method = 'POST';
+                    }
+
+                    const payload = {
+                        ...form.value,
+                        price: parseFloat(form.value.price),
+                    };
+
+                    await fetch(url, {
+                        method: method,
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload),
+                    });
+
+                    await loadSessions();
+                    resetForm();
+                };
+
+                const deleteSession = async (ulid) => {
+                    if (!confirm('Are you sure?')) return;
+
+                    await fetch('/api/moviesession/delete', {
+                        method: 'DELETE',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ulid}),
+                    });
+                    await loadSessions();
+                };
+
+                const editSession = (session) => {
+                    form.value = {
+                        ulid: session.ulid,
+                        movieUlid: session.movieUlid,
+                        startDate: session.startDate.slice(0, 16), // ISO format for input[type=datetime-local]
+                        price: session.price,
+                    };
+                    isEditing.value = true;
+                };
+
+                const resetForm = () => {
+                    form.value = {ulid: null, movieUlid: '', startDate: '', price: null};
+                    isEditing.value = false;
+                };
+
+                const getMovieTitle = (ulid) => {
+                    const movie = movies.value.find(m => m.ulid === ulid);
+                    return movie ? movie.title : 'Unknown';
+                };
+
+                const formatDate = (dateString) => {
+                    return new Date(dateString).toLocaleString();
+                };
+
+                onMounted(() => {
+                    loadSessions();
+                    loadMovies();
+                });
+
+                return {
+                    sessions, movies, form, isEditing,
+                    handleSubmit, deleteSession, editSession, resetForm,
+                    getMovieTitle, formatDate
+                };
+            }
+        }).mount('#app');
+    </script>
+{% endblock %}
