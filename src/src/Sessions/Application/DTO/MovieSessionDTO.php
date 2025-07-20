@@ -21,7 +21,7 @@ class MovieSessionDTO
         return new self(
             $movieSession->getUlid(),
             $movieSession->getMovieUlid(),
-            $movieSession->getStartDate()->format('Y-m-d'),
+            $movieSession->getStartDate()->format('Y-m-d H:i:s'),
             $movieSession->getPrice()
         );
     }

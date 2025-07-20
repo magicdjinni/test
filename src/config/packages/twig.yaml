@@ -6,6 +6,7 @@ twig:
     '%kernel.project_dir%/src/Movies/Presentation/Web/templates': Movies
     '%kernel.project_dir%/src/Sessions/Presentation/Web/templates': Sessions
     '%kernel.project_dir%/src/Visitors/Presentation/Web/templates': Visitors
+    '%kernel.project_dir%/src/Statistic/Presentation/Web/templates': Statistic
 when@test:
   twig:
     strict_variables: true

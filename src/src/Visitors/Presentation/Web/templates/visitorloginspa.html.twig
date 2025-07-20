@@ -42,7 +42,9 @@
 
             <!-- Buy Tickets Tab -->
             <div v-if="activeTab === 'buy'">
-                <div v-if="message" class="text-green-700 font-semibold mb-4">{{ '{{' }} message {{ '}}' }}</div>
+                <div v-if="showSuccess" class="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50 transition-all">
+                    🎉 Ticket purchased successfully!
+                </div>
                 <div v-if="sessions.length === 0" class="text-gray-500">No movie sessions found.</div>
 
                 <ul>
@@ -59,7 +61,9 @@
 
             <!-- Cancel Tickets Tab -->
             <div v-if="activeTab === 'cancel'">
-                <div v-if="cancelMessage" class="text-green-700 font-semibold mb-4">{{ '{{' }} cancelMessage {{ '}}' }}</div>
+                <div v-if="cancelMessage" class="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50 transition-all">
+                    {{ '{{' }} cancelMessage {{ '}}' }}
+                </div>
                 <div v-if="tickets.length === 0" class="text-gray-500">No tickets to cancel.</div>
 
                 <ul>
@@ -108,6 +112,7 @@
                 const tickets = ref([]);
                 const cancelMessage = ref('');
                 const activeTab = ref('buy');
+                const showSuccess = ref(false);
 
                 const login = async () => {
                     error.value = null;
@@ -173,7 +178,12 @@
                     });
 
                     if (res.ok) {
-                        message.value = 'Ticket purchased successfully!';
+                        showSuccess.value = true;
+
+                        setTimeout(() => {
+                            showSuccess.value = false;
+                        }, 3000);
+
                         await loadTickets();
                     } else {
                         const err = await res.json();
@@ -203,6 +213,11 @@
 
                     if (res.ok) {
                         cancelMessage.value = 'Ticket cancelled successfully.';
+
+                        setTimeout(() => {
+                            cancelMessage.value = false;
+                        }, 3000);
+
                         await loadTickets();
                     } else {
                         const err = await res.json();
@@ -215,7 +230,7 @@
                 };
 
                 onMounted(async () => {
-                    // Restore login
+
                     const token = localStorage.getItem('visitorToken');
                     const ulid = localStorage.getItem('visitorUlid');
                     const emailStored = localStorage.getItem('visitorEmail');
@@ -224,16 +239,16 @@
                         visitor.value = { ulid, email: emailStored };
                     }
 
-                    await loadMovies();     // Загружаем фильмы сначала
-                    await loadSessions();   // Потом сессии
-                    await loadTickets();    // Потом билеты
+                    await loadMovies();
+                    await loadSessions();
+                    await loadTickets();
                 });
 
                 return {
                     // auth
                     email, password, error, visitor, isLoggedIn, login, logout,
                     // app
-                    activeTab, message, cancelMessage,
+                    activeTab, message, cancelMessage, showSuccess,
                     sessions, movies, tickets,
                     getMovieTitle, formatDate,
                     buyTicket, cancelTicket, getSessionByUlid

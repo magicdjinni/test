@@ -15,11 +15,11 @@ RUN apk add --update --no-cache \
   && docker-php-ext-install pdo pdo_mysql
 
 #   redis
-#RUN apk add --update --no-cache --virtual .build-dependencies ${PHPIZE_DEPS} \
-#        && pecl install redis \
-#        && docker-php-ext-enable redis \
-#        && pecl clear-cache \
-#        && apk del .build-dependencies
+RUN apk add --update --no-cache --virtual .build-dependencies ${PHPIZE_DEPS} \
+        && pecl install redis \
+        && docker-php-ext-enable redis \
+        && pecl clear-cache \
+        && apk del .build-dependencies
 
 #RUN apk add --update --no-cache \
 #  && docker-php-ext-install bcmath

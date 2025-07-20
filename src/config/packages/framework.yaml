@@ -17,6 +17,14 @@ framework:
   php_errors:
     log: true
 
+  cache:
+    pools:
+      cache.redis:
+        adapter: cache.adapter.redis
+        default_lifetime: 3600
+        provider: '%env(REDIS_URL)%'
+    app: cache.redis
+
 when@test:
   framework:
     test: true

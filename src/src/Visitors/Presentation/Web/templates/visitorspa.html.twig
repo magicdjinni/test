@@ -121,7 +121,12 @@
                 };
 
                 onMounted(() => {
+                    const token = localStorage.getItem('visitorToken');
+                    const ulid = localStorage.getItem('visitorUlid');
+
                     loadVisitors();
+
+                    console.log(token, ulid);
                 });
 
                 return {

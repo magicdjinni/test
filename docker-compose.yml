@@ -50,12 +50,15 @@ services:
     volumes:
       - ./db-data/mariadb.local:/var/lib/mysql
 
-#  protonix-redis:
-#    image: "redis:latest"
-#    ports:
-#      - "6379:6379"
-#    volumes:
-#      - ./db-data/redis.local:/data
+  protonix-redis:
+    image: "redis:latest"
+    container_name: "protonix-redis"
+    ports:
+      - "6379:6379"
+    networks:
+      - protonix-inner-network
+    volumes:
+      - ./db-data/redis.local:/data
 
 volumes:
   db-data:

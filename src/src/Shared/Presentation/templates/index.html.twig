@@ -12,6 +12,7 @@
 <div class="text-center">
     <h1 class="text-4xl font-bold mb-4">🎬 Welcome to Protonix test API</h1>
     <a href="/" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Home</a>
+    <a href="/statisticspa" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Statistic by dates</a>
     <a href="/moviespa" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Movies</a>
     <a href="/moviesessionspa" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Movie
         Sessions</a>
@@ -19,6 +20,106 @@
     <a href="/visitorloginspa" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tickets</a>
     <a href="/api/doc" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">SWAGGER</a>
 </div>
-{% block body %}{% endblock %}
+
+{% block body %}
+    <div id="app" class="max-w-5xl mx-auto p-6">
+        <div class="text-center">
+            <br>
+            <h1 class="text-2xl font-bold mb-5">Overall Movie Statistics</h1>
+        </div>
+
+        <div v-if="loading" class="text-center text-gray-500">Loading...</div>
+
+        <div v-for="movie in stats" :key="movie.title" class="mb-6 bg-white shadow rounded-lg p-4">
+            <h2 class="text-xl font-semibold text-blue-700">{{ '{{' }} movie.title {{ '}}' }}</h2>
+
+            <div v-for="session in movie.sessionOverallComponentView" :key="session.startDate.date"
+                 class="mt-4 border-t pt-4">
+
+                <p><strong>📅 Start Date:</strong> {{ '{{' }} formatDate(session.startDate.date) {{ '}}' }}</p>
+                <p><strong>🎫 Tickets Sold:</strong> {{ '{{' }} session.ticketsSold {{ '}}' }}</p>
+                <p><strong>💰 Total Revenue:</strong> {{ '{{' }} session.totalSum {{ '}}' }} ₴</p>
+
+                <div class="mt-2">
+                    <strong>👥 Visitors:</strong>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <button
+                                v-for="email in session.visitorsEmails"
+                                :key="email"
+                                @click="loadVisitor(email)"
+                                class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-2 py-1 rounded"
+                        >
+                            {{ '{{' }} email {{ '}}' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно -->
+        <div v-if="showModal"
+             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+                <button @click="showModal = false"
+                        class="absolute top-2 right-2 text-gray-500 hover:text-black">
+                    ✖
+                </button>
+                <h3 class="text-lg font-semibold mb-3">📋 Visitor Stats: {{ '{{' }} visitorStats.visitorEmail {{ '}}' }}</h3>
+                <ul class="text-sm space-y-1">
+                    <li><strong>✔ Purchased:</strong> {{ '{{' }} visitorStats.purchasedCount {{ '}}' }} tickets / {{ '{{' }} visitorStats.purchasedSum {{ '}}' }} ₴</li>
+                    <li><strong>❌ Cancelled:</strong> {{ '{{' }} visitorStats.cancelledCount {{ '}}' }} tickets / {{ '{{' }} visitorStats.cancelledSum {{ '}}' }} ₴</li>
+                </ul>
+                <div class="text-right mt-4">
+                    <button @click="showModal = false"
+                            class="bg-gray-300 hover:bg-gray-400 px-4 py-1 rounded">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const stats = ref([]);
+                const loading = ref(true);
+                const showModal = ref(false);
+                const visitorStats = ref({});
+
+                const formatDate = (dateStr) => {
+                    const d = new Date(dateStr);
+                    return d.toLocaleString();
+                };
+
+                const loadStats = async () => {
+                    const res = await fetch('http://protonix.test/api/statistic/overall');
+                    stats.value = await res.json();
+                    loading.value = false;
+                };
+
+                const loadVisitor = async (email) => {
+                    const res = await fetch(`http://protonix.test/api/statistic/visitor/${email}`);
+                    visitorStats.value = await res.json();
+                    showModal.value = true;
+                };
+
+                onMounted(loadStats);
+
+                return {
+                    stats,
+                    loading,
+                    showModal,
+                    visitorStats,
+                    formatDate,
+                    loadVisitor
+                };
+            }
+        }).mount('#app');
+    </script>
+{% endblock %}
+
 </body>
 </html>

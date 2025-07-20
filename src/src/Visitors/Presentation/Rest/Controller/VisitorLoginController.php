@@ -8,7 +8,7 @@ use App\Visitors\Infrastructure\Repository\VisitorRepository;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -52,7 +52,7 @@ class VisitorLoginController extends AbstractController
 
         $visitor = $visitorRepo->findOneBy(['email' => $email]);
 
-        if ($hasher->isPasswordValid($visitor, $password) === false) {
+        if ($visitor === null || $hasher->isPasswordValid($visitor, $password) === false) {
             return new JsonResponse(['error' => 'Invalid credentials'], 401);
         }
 

@@ -22,6 +22,10 @@ visitors:
         namespace: App\Visitors\Presentation
     type: attribute
 
-
+statistic:
+  resource:
+    path: ../src/Statistic/Presentation/
+    namespace: App\Statistic\Presentation
+  type: attribute
 
 

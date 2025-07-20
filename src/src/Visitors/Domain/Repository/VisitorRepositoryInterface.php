@@ -19,5 +19,5 @@ interface VisitorRepositoryInterface
     /** @return Visitor[] */
     public function findAll(): array;
 
-    public function findOneBy(array $criteria): Visitor;
+    public function findOneBy(array $criteria): ?Visitor;
 }

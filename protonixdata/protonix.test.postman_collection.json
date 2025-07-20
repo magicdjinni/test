@@ -400,7 +400,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\": \"friend\"\r\n}",
+							"raw": "{\r\n  \"email\": \"cardinal@gmail.com\",\r\n  \"password\": \"friend122\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -682,6 +682,173 @@
 								"api",
 								"visitor",
 								"getlist"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistic",
+			"item": [
+				{
+					"name": "api_get_movie_statistic_by_date",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/statistic/date/2025-07-19?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"statistic",
+								"date",
+								"2025-07-19"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_visitor_statistic_by_email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/statistic/visitor/test1@gmail.com?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"statistic",
+								"visitor",
+								"test1@gmail.com"
+							],
+							"query": [
+								{
+									"key": "XDEBUG_SESSION_START",
+									"value": "PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_session_statistic_by_dates",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/statistic/dates?from=2025-07-18&to=2025-07-19?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"statistic",
+								"dates"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2025-07-18"
+								},
+								{
+									"key": "to",
+									"value": "2025-07-19?XDEBUG_SESSION_START=PHPSTORM"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_get_session_statistic_overall",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://protonix.test/api/statistic/overall?XDEBUG_SESSION_START=PHPSTORM",
+							"protocol": "http",
+							"host": [
+								"protonix",
+								"test"
+							],
+							"path": [
+								"api",
+								"statistic",
+								"overall"
 							],
 							"query": [
 								{

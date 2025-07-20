@@ -6,12 +6,11 @@ namespace App\Visitors\Presentation\Rest\Controller;
 
 use App\Visitors\Application\Command\CancelVisitorTicket\CancelVisitorTicketCommand;
 use JsonException;
-use App\Visitors\Application\Command\DeleteVisitor\DeleteVisitorCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 
 #[Route('/api/visitor/ticket/cancel', name: 'api_cancel_visitor_ticket', methods: ['PUT'])]

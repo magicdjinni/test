@@ -21,3 +21,9 @@ visitorloginspa:
   controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
   defaults:
     template: '@Visitors/visitorloginspa.html.twig'
+
+statisticspa:
+  path: /statisticspa
+  controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+  defaults:
+    template: '@Statistic/statisticspa.html.twig'

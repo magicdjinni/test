@@ -87,9 +87,13 @@ final class VisitorRepository implements VisitorRepositoryInterface
         $this->em->flush();
     }
 
-    public function findOneBy(array $criteria): Visitor
+    public function findOneBy(array $criteria): ?Visitor
     {
         $entity =  $this->repository->findOneBy($criteria);
+
+        if (!$entity) {
+            return null;
+        }
 
         return $this->visitorFactory->map(
             $entity->getId(),

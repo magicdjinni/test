@@ -6,7 +6,7 @@ namespace App\Shared\Presentation\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 
 #[Route('/api/healthcheck', name: 'healthcheck', methods: ['GET'])]
